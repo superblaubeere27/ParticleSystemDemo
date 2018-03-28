@@ -6,7 +6,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class ParticleSystem {
 
 
     public void tick(int delta) {
-        if(Mouse.isButtonDown(0)) addParticles(1);
+        if (Mouse.isButtonDown(0)) addParticles(1);
         for (Particle particle : particleList) {
             particle.tick(delta, SPEED);
         }
@@ -52,7 +52,7 @@ public class ParticleSystem {
             if (mouse) {
 
                 java.awt.Color c = null;
-                if(rainbow) {
+                if (rainbow) {
 
                     c = Color.rainbow(50.0f, 0.0f);
 
@@ -72,29 +72,42 @@ public class ParticleSystem {
                 }
 
             } else {
+
+                float nearestDistance = 0;
+                Particle nearestParticle = null;
+
                 for (Particle particle1 : particleList) {
                     float distance = particle.getDistanceTo(particle1);
-                    if (distance < dist
-                            && (particle.getDistanceTo(Mouse.getX(), Display.getHeight() - Mouse.getY()) < dist
-                            || particle1.getDistanceTo(Mouse.getX(), Display.getHeight() - Mouse.getY()) < dist)) {
-                        java.awt.Color c = null;
-                        if(rainbow) {
+                    if (distance <= dist
+                            && (MathUtil.distance(Mouse.getX(), Display.getHeight() - Mouse.getY(), particle.getX(), particle.getY()) <= dist
+                            || MathUtil.distance(Mouse.getX(), Display.getHeight() - Mouse.getY(), particle1.getX(), particle1.getY()) <= dist)
+                            && (nearestDistance <= 0 || distance <= nearestDistance)) {
 
-                            c = Color.rainbow(50.0f, 0.0f);
-
-                        }
-                        float alpha = Math.min(1.0f, Math.min(1.0f, 1.0f - distance / dist));
-                        drawLine(particle.getX(),
-                                particle.getY(),
-                                particle1.getX(),
-                                particle1.getY(),
-                                rainbow ? c.getRed() / 255.0f : 1,
-                                rainbow ? c.getGreen() / 255.0f : 1,
-                                rainbow ? c.getBlue() / 255.0f : 1,
-                                alpha);
+                        nearestDistance = distance;
+                        nearestParticle = particle1;
 
                     }
                 }
+
+                if (nearestParticle != null) {
+
+                    java.awt.Color c = null;
+                    if (rainbow) {
+
+                        c = Color.rainbow(50.0f, 0.0f);
+
+                    }
+                    float alpha = Math.min(1.0f, Math.min(1.0f, 1.0f - nearestDistance / dist));
+                    drawLine(particle.getX(),
+                            particle.getY(),
+                            nearestParticle.getX(),
+                            nearestParticle.getY(),
+                            rainbow ? c.getRed() / 255.0f : 1,
+                            rainbow ? c.getGreen() / 255.0f : 1,
+                            rainbow ? c.getBlue() / 255.0f : 1,
+                            alpha);
+                }
+
             }
         }
     }
