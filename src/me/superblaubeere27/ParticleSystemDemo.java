@@ -10,6 +10,7 @@ import java.awt.*;
 public class ParticleSystemDemo extends BasicGame {
     private ParticleSystem particleSystem;
     private boolean mouse;
+    private boolean rainbow;
     private int dist;
 
     public ParticleSystemDemo() {
@@ -18,13 +19,14 @@ public class ParticleSystemDemo extends BasicGame {
 
     public static void main(String args[]) {
         JPanel jPanel = new JPanel();
-        jPanel.setLayout(new GridLayout(5, 2));
+        jPanel.setLayout(new GridLayout(6, 2));
         JSpinner width = new JSpinner();
         width.setValue(1280);
         JSpinner height = new JSpinner();
         height.setValue(720);
         JCheckBox fullScreen = new JCheckBox("");
         JCheckBox connectMouse = new JCheckBox("");
+        JCheckBox rainBow = new JCheckBox("");
         JLabel distLabel = new JLabel("connectingDistance (150):");
         JSlider dist = new JSlider(SwingConstants.HORIZONTAL,100, 500, 150);
         dist.addChangeListener(e -> {
@@ -38,6 +40,8 @@ public class ParticleSystemDemo extends BasicGame {
         jPanel.add(height);
         jPanel.add(new JLabel("Fullscreen:"));
         jPanel.add(fullScreen);
+        jPanel.add(new JLabel("Rainbow:"));
+        jPanel.add(rainBow);
         jPanel.add(new JLabel("ConnectMouse:"));
         jPanel.add(connectMouse);
         jPanel.add(distLabel);
@@ -50,6 +54,7 @@ public class ParticleSystemDemo extends BasicGame {
             AppGameContainer container = new AppGameContainer(demo);
             demo.mouse = connectMouse.isSelected();
             demo.dist = dist.getValue();
+            demo.rainbow = rainBow.isSelected();
             container.setDisplayMode((int) width.getValue(), (int) height.getValue(), fullScreen.isSelected());
             container.setVSync(true);
             container.setShowFPS(true);
@@ -61,7 +66,7 @@ public class ParticleSystemDemo extends BasicGame {
 
     @Override
     public void init(GameContainer gameContainer) throws SlickException {
-        particleSystem = new ParticleSystem(200, mouse, dist);
+        particleSystem = new ParticleSystem(200, mouse, rainbow, dist);
     }
 
     @Override
