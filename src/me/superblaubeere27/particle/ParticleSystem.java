@@ -34,6 +34,7 @@ public class ParticleSystem {
 
 
     public void tick(int delta) {
+        if(Mouse.isButtonDown(0)) addParticles(1);
         for (Particle particle : particleList) {
             particle.tick(delta, SPEED);
         }
@@ -41,7 +42,7 @@ public class ParticleSystem {
 
     public void render() {
         for (Particle particle : particleList) {
-            GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+            GL11.glColor4f(1.0f, 1.0f, 1.0f, particle.getAlpha() / 255.0f);
             GL11.glPointSize(particle.getSize());
             GL11.glBegin(GL11.GL_POINTS);
 

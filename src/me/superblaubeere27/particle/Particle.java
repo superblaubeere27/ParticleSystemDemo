@@ -10,15 +10,14 @@ public class Particle {
     private static final Random random = new Random();
 
     private Vector2f velocity;
-    private float x;
-    private float y;
+    private Vector2f pos;
     private float size;
+    private float alpha;
 
 
     public Particle(Vector2f velocity, float x, float y, float size) {
         this.velocity = velocity;
-        this.x = x;
-        this.y = y;
+        this.pos = new Vector2f(x, y);
         this.size = size;
     }
 
@@ -30,6 +29,12 @@ public class Particle {
         return new Particle(velocity, x, y, size);
     }
 
+    public float getAlpha() {
+
+        return this.alpha;
+
+    }
+
     public Vector2f getVelocity() {
         return velocity;
     }
@@ -39,19 +44,19 @@ public class Particle {
     }
 
     public float getX() {
-        return x;
+        return pos.getX();
     }
 
     public void setX(float x) {
-        this.x = x;
+        this.pos.setX(x);
     }
 
     public float getY() {
-        return y;
+        return pos.getY();
     }
 
     public void setY(float y) {
-        this.y = y;
+        this.pos.setY(y);
     }
 
     public float getSize() {
@@ -63,14 +68,15 @@ public class Particle {
     }
 
     public void tick(int delta, float speed) {
-        x += velocity.getX() * delta * speed;
-        y += velocity.getY() * delta * speed;
+        pos.x += velocity.getX() * delta * speed;
+        pos.y += velocity.getY() * delta * speed;
+        if(alpha < 255.0f)this.alpha += 0.05f * delta;
 
-        if (x > Display.getWidth()) x = 0;
-        if (x < 0) x = Display.getWidth();
+        if (pos.getX() > Display.getWidth()) pos.setX(0);
+        if (pos.getX() < 0) pos.setX(Display.getWidth());
 
-        if (y > Display.getHeight()) y = 0;
-        if (y < 0) y = Display.getHeight();
+        if (pos.getY() > Display.getHeight()) pos.setY(0);
+        if (pos.getY() < 0) pos.setY(Display.getHeight());
     }
 
     public float getDistanceTo(Particle particle1) {
