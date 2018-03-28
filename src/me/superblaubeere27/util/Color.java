@@ -11,14 +11,4 @@ public class Color {
 
     }
 
-    public static void main(String[] args) {
-
-        while(true) {
-
-            System.out.println(rainbow(100.0f, 0.0f));
-
-        }
-
-    }
-
 }
